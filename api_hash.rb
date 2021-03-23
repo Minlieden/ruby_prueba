@@ -138,7 +138,7 @@ url_imagen.each do |url|
   pagina += "<img src= '#{url}'></li>\n    "
 
 end
-pagina += "\n</ul>
+pagina += "\n  </ul>
 </body>
 </html>"
 
