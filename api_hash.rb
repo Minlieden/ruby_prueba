@@ -61,85 +61,35 @@ hash = {
     ]
 }
 
-=begin
+
 def buid_web_page(hash)
   url_imagen = []
   hash.each do |photos, value|
     value.each do |atributos|
-      url_imagen = atributos.values_at(:img_src)
+      atributos.each do |key, valores|
+        valores = valores.to_s + " "
+        if key == :img_src
+          url_imagen += valores.split(" ")
+        end
+      end
     end
   end
-  puts url_imagen
-=begin
-  pagina = File.new("index.html", "w")
-  pagina.puts("<html>
+  pagina = "<html>
   <head>
   </head>
   <body>
-  <ul>
-  <li><img src= #{url_imagen}")
-  pagina.close()
+    <ul>
+      <li>
+        "
+  url_imagen.each do |url|
+    pagina += "<img src= '#{url}'></li>\n        "
+  end
+  pagina += "\n    </ul>
+  </body>
+  </html>"
+  File.write('index.html',pagina)
 end
 
 
 buid_web_page(hash)
 
-=end
-=begin
-hash.each do |photos, value|
-  puts "photos: #{photos} , value: #{value}"
-  value.each do |atributos|
-    puts "atributos: #{atributos} "
-    puts '---- '
-    puts atributos.keys
-    puts '---- '
-    puts atributos.values
-    puts '---- '
-    puts atributos.dig(:camera,:name)
-    puts '---- '
-    puts '---- '
-    puts atributos.dig(:id)
-    puts atributos.dig(:camera,:name)
-    puts atributos.dig(:img_src)
-    puts atributos.dig(:rover, :name)
-    puts '---- '
-    puts '---- '
-  end
-end
-=end
-
-url_imagen = []
-hash.each do |photos, value|
-  value.each do |atributos|
-    atributos.each do |key, valores|
-      valores = valores.to_s + " "
-      if key == :img_src
-        url_imagen += valores.split(" ")
-      end
-    end
-  end
-end
-puts '---- '
-puts '---- '
-#print url_imagen
-puts '---- '
-puts '---- '
-
-#pagina = File.new("index.html", "w")
-pagina = "<html>
-<head>
-</head>
-<body>
-  <ul>
-    <li>
-    "
-url_imagen.each do |url|
-  puts url
-  pagina += "<img src= '#{url}'></li>\n    "
-
-end
-pagina += "\n  </ul>
-</body>
-</html>"
-
-File.write('index.html',pagina)
