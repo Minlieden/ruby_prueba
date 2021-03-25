@@ -1,68 +1,13 @@
-hash = {
+require 'uri'
+require 'net/http'
+require 'openssl'
+require 'json'
 
-  "photos": [
-      {
-          "id": 102693,
-          "sol": 1000,
-          "camera": {
-              "id": 20,
-              "name": "FHAZ",
-              "rover_id": 5,
-              "full_name": "Front Hazard Avoidance Camera"
-          },
-          "img_src": "http://mars.jpl.nasa.gov/msl-raw-images/proj/msl/redops/ods/surface/sol/01000/opgs/edr/fcam/FLB_486265257EDR_F0481570FHAZ00323M_.JPG",
-          "earth_date": "2015-05-30",
-          "rover": {
-              "id": 5,
-              "name": "Curiosity",
-              "landing_date": "2012-08-06",
-              "launch_date": "2011-11-26",
-              "status": "active"
-          }
-      },
-      {
-          "id": 102694,
-          "sol": 1000,
-          "camera": {
-              "id": 20,
-              "name": "FHAZ",
-              "rover_id": 5,
-              "full_name": "Front Hazard Avoidance Camera"
-          },
-          "img_src": "http://mars.jpl.nasa.gov/msl-raw-images/proj/msl/redops/ods/surface/sol/01000/opgs/edr/fcam/FRB_486265257EDR_F0481570FHAZ00323M_.JPG",
-          "earth_date": "2015-05-30",
-          "rover": {
-              "id": 5,
-              "name": "Curiosity",
-              "landing_date": "2012-08-06",
-              "launch_date": "2011-11-26",
-              "status": "active"
-          }
-      },
-      {
-          "id": 102850,
-          "sol": 1000,
-          "camera": {
-              "id": 21,
-              "name": "RHAZ",
-              "rover_id": 5,
-              "full_name": "Rear Hazard Avoidance Camera"
-          },
-          "img_src": "http://mars.jpl.nasa.gov/msl-raw-images/proj/msl/redops/ods/surface/sol/01000/opgs/edr/rcam/RLB_486265291EDR_F0481570RHAZ00323M_.JPG",
-          "earth_date": "2015-05-30",
-          "rover": {
-              "id": 5,
-              "name": "Curiosity",
-              "landing_date": "2012-08-06",
-              "launch_date": "2011-11-26",
-              "status": "active"
-          }
-      }
-    ]
-}
-def obtener_datos(endpoint)
+
+
+
+def obtener_datos(endpoint, api_key)
   sol = "photos?sol=0&api_key="
-  api_key = "yzcmtFAavpxRrh3CR0nQtGHs07tV9Nzx7l0LhuC4"
   url_endpoint = endpoint + sol + api_key
   url = URI(url_endpoint)
   http = Net::HTTP.new(url.host, url.port)
@@ -71,21 +16,33 @@ def obtener_datos(endpoint)
   http.verify_mode = OpenSSL::SSL::VERIFY_PEER
   response = http.request(request)
   result = JSON.parse(response.read_body)
-  return result
+  hash = result
+  buid_web_page(hash)
 end
 
-def buid_web_page(result)
+def buid_web_page(hash)
   url_imagen = []
   hash.each do |photos, value|
+    print "photos #{photos}"
+    puts " "
+    
     value.each do |atributos|
+      print "atributos  #{atributos}"
+      puts " "
       atributos.each do |key, valores|
+        print "valores #{key} #{valores}"
+        puts " "
         valores = valores.to_s + " "
-        if key == :img_src
+        if key == "img_src"
           url_imagen += valores.split(" ")
+          #print "url imagen #{url_imagen}"
+          #puts " "
+          
         end
       end
     end
   end
+  
   pagina = "<html>
   <head>
   </head>
@@ -99,9 +56,12 @@ def buid_web_page(result)
   pagina += "\n    </ul>
   </body>
   </html>"
+  
+  
   File.write('index.html',pagina)
 end
 
-obtener_datos("https://api.nasa.gov/mars-photos/api/v1/rovers/curiosity/")
-buid_web_page(result)
+#print obtener_datos("https://api.nasa.gov/mars-photos/api/v1/rovers/curiosity/", "yzcmtFAavpxRrh3CR0nQtGHs07tV9Nzx7l0LhuC4")
+
+obtener_datos("https://api.nasa.gov/mars-photos/api/v1/rovers/curiosity/", "yzcmtFAavpxRrh3CR0nQtGHs07tV9Nzx7l0LhuC4")
 
