@@ -60,9 +60,21 @@ hash = {
       }
     ]
 }
+def obtener_datos(endpoint)
+  sol = "photos?sol=0&api_key="
+  api_key = "yzcmtFAavpxRrh3CR0nQtGHs07tV9Nzx7l0LhuC4"
+  url_endpoint = endpoint + sol + api_key
+  url = URI(url_endpoint)
+  http = Net::HTTP.new(url.host, url.port)
+  request = Net::HTTP::Get.new(url)
+  http.use_ssl = true
+  http.verify_mode = OpenSSL::SSL::VERIFY_PEER
+  response = http.request(request)
+  result = JSON.parse(response.read_body)
+  return result
+end
 
-
-def buid_web_page(hash)
+def buid_web_page(result)
   url_imagen = []
   hash.each do |photos, value|
     value.each do |atributos|
@@ -90,6 +102,6 @@ def buid_web_page(hash)
   File.write('index.html',pagina)
 end
 
-
-buid_web_page(hash)
+obtener_datos("https://api.nasa.gov/mars-photos/api/v1/rovers/curiosity/")
+buid_web_page(result)
 
