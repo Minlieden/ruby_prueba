@@ -50,4 +50,3 @@ def buid_web_page(hash)
 end
 
 obtener_datos("https://api.nasa.gov/mars-photos/api/v1/rovers/curiosity/", "yzcmtFAavpxRrh3CR0nQtGHs07tV9Nzx7l0LhuC4")
-
